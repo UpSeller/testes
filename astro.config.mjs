@@ -5,6 +5,7 @@ const SITE_URL = "https://upseller.github.io/testes";
 
 export default defineConfig({
   site: SITE_URL,
+  base: "/testes",
   output: "static",
   integrations: [sitemap()],
   build: {
