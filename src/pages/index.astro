@@ -1,0 +1,75 @@
+---
+import Base from "../layouts/Base.astro";
+
+// Coleta todos os posts de pages/blog/
+const posts = await Astro.glob("./blog/*.md");
+const sortedPosts = posts.sort(
+  (a, b) => new Date(b.frontmatter.date).getTime() - new Date(a.frontmatter.date).getTime()
+);
+
+const siteName = "BRAEL Teste";
+const siteDescription = "Repositório de teste para validar a publicação BRAEL → Astro → GitHub Pages.";
+
+// Schema.org WebSite structured data
+const schemaWebsite = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteName,
+  url: Astro.site?.href,
+};
+---
+
+<Base title={`${siteName} — Home`} description={siteDescription}>
+  <header>
+    <h1>{siteName}</h1>
+    <p>{siteDescription}</p>
+  </header>
+
+  <main>
+    <h2>Artigos</h2>
+    <ul>
+      {sortedPosts.map((post) => (
+        <li>
+          <a href={post.url}>
+            <strong>{post.frontmatter.title}</strong>
+          </a>
+          <br />
+          <small>
+            <time datetime={post.frontmatter.date}>
+              {new Date(post.frontmatter.date).toLocaleDateString("pt-BR")}
+            </time>
+            {" — "}
+            {post.frontmatter.description}
+          </small>
+        </li>
+      ))}
+    </ul>
+  </main>
+
+  <script type="application/ld+json" set:html={JSON.stringify(schemaWebsite)} />
+</Base>
+
+<style>
+  header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+  h1 {
+    font-size: 1.8rem;
+  }
+  h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 1.2rem;
+  }
+  small {
+    color: #666;
+  }
+</style>

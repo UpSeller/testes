@@ -1,0 +1,98 @@
+---
+import Base from "./Base.astro";
+
+interface Props {
+  frontmatter: {
+    title: string;
+    description: string;
+    date: string;
+    author?: string;
+    ogImage?: string;
+    tags?: string[];
+  };
+}
+
+const { frontmatter } = Astro.props;
+const { title, description, date, author = "Redação", tags = [] } = frontmatter;
+
+// Schema.org Article structured data
+const schemaArticle = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: title,
+  description: description,
+  datePublished: date,
+  author: { "@type": "Person", name: author },
+  ...(tags.length > 0 && { keywords: tags.join(", ") }),
+};
+---
+
+<Base title={title} description={description} articleDate={date} ogImage={frontmatter.ogImage}>
+  <nav>
+    <a href="/">&larr; Voltar</a>
+  </nav>
+
+  <article>
+    <header>
+      <h1>{title}</h1>
+      <time datetime={date}>{new Date(date).toLocaleDateString("pt-BR")}</time>
+      {author && <span> &middot; {author}</span>}
+      {tags.length > 0 && (
+        <div class="tags">
+          {tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <slot />
+  </article>
+
+  <!-- Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify(schemaArticle)} />
+</Base>
+
+<style>
+  nav {
+    margin-bottom: 2rem;
+  }
+  header {
+    margin-bottom: 2rem;
+  }
+  h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+  time,
+  span {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  .tags {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .tag {
+    background: #f0f0f0;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    color: #444;
+  }
+  article :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  article :global(p) {
+    margin-bottom: 1rem;
+  }
+  article :global(ul),
+  article :global(ol) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+</style>
