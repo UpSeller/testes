@@ -1,5 +1,6 @@
 ---
 import Base from "./Base.astro";
+import { withBase } from "../lib/base";
 
 interface Props {
   frontmatter: {
@@ -29,7 +30,9 @@ const schemaArticle = {
 
 <Base title={title} description={description} articleDate={date} ogImage={frontmatter.ogImage}>
   <nav>
-    <a href="/">&larr; Voltar</a>
+    <!-- withBase() e não href="/": um caminho fixo sairia do site quando
+         ele é servido num subdiretório do GitHub Pages. -->
+    <a href={withBase()}>&larr; Voltar</a>
   </nav>
 
   <article>

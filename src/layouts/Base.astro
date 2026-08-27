@@ -1,4 +1,6 @@
 ---
+import { withBase } from "../lib/base";
+
 interface Props {
   title: string;
   description: string;
@@ -12,12 +14,12 @@ const {
   title,
   description,
   canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
-  ogImage = "/og-default.jpg",
+  ogImage = "og-default.jpg",
   articleDate,
   noindex = false,
 } = Astro.props;
 
-const ogImageURL = new URL(ogImage, Astro.site).href;
+const ogImageURL = ogImage.startsWith("http") ? ogImage : new URL(withBase(ogImage), Astro.site).href;
 const siteName = "BRAEL Teste";
 ---
 
@@ -44,7 +46,7 @@ const siteName = "BRAEL Teste";
     {articleDate && <meta property="article:published_time" content={articleDate} />}
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={withBase("favicon.svg")} />
 
     <!-- Preconnect (descomente conforme necessário) -->
     <!-- <link rel="preconnect" href="https://fonts.googleapis.com" /> -->
